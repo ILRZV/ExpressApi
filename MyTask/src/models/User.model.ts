@@ -1,4 +1,5 @@
-import { Table, Model, Column, DataType } from "sequelize-typescript";
+import { Table, Model, Column, DataType, HasMany } from "sequelize-typescript";
+import { RefreshToken } from "./RefreshToken.model";
 
 @Table({
   timestamps: false,
@@ -11,6 +12,13 @@ export class User extends Model {
     primaryKey: true,
   })
   id!: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    unique: true,
+  })
+  identity!: string;
 
   @Column({
     type: DataType.STRING,

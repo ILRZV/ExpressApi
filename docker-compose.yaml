@@ -1,11 +1,37 @@
 version: "3.8"
+
+networks:
+  app-tier:
+    driver: bridge
+
 services:
-  mysqldb:
+  db:
     image: mysql:5.7
     restart: unless-stopped
     env_file: ./.env
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
+    expose:
+      - "3306"
     ports:
-      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+      - "3306:3306"
+    networks:
+      - app-tier
+
+  backend:
+    container_name: backend
+    build:
+      context: ./MyTask
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+      - MYSQLDB_HOST=db
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - app-tier

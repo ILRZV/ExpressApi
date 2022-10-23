@@ -3,6 +3,7 @@ import connection from "./db/config";
 import { json, urlencoded } from "body-parser";
 import router from "./routes/router";
 import cors from "cors";
+import ErrorMiddleware from "./middlewares/ErrorHandler.middleware";
 
 const app = express();
 
@@ -11,7 +12,7 @@ app.use(cors());
 app.use(urlencoded({ extended: true }));
 
 app.use("/", router);
-
+app.use(ErrorMiddleware);
 app.use(
   (
     err: Error,
